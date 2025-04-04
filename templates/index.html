@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Générateur de mots de passe</title>
+</head>
+<body>
+  <h1>Générateur de mots de passe sécurisés</h1>
+  <form method="post">
+    <label>Longueur : <input type="number" name="length" value="12" min="4" max="64"></label><br>
+    <label><input type="checkbox" name="digits" checked> Inclure des chiffres</label><br>
+    <label><input type="checkbox" name="upper" checked> Lettres majuscules</label><br>
+    <label><input type="checkbox" name="special" checked> Caractères spéciaux</label><br><br>
+    <button type="submit">Générer</button>
+  </form>
+
+  {% if password %}
+    <h2>Mot de passe généré :</h2>
+    <p style="font-size: 20px; font-weight: bold;">{{ password }}</p>
+  {% endif %}
+</body>
+</html>
