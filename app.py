@@ -4,27 +4,51 @@ import os
 
 app = Flask(__name__)
 
-# Français
-sujets_fr = ["Je", "Tu", "Il", "Elle", "Nous", "Vous", "Ils", "Elles"]
-verbes_fr = ["mange", "lit", "joue", "court", "dort", "regarde", "prend", "trouve", "cherche", "ouvre"]
-complements_fr = ["une pomme", "un livre", "le ballon", "dans la rue", "au parc", "à l’école", "dans le jardin"]
+# Phrases complètes en français
+phrases_fr = [
+    "Je mange une pomme",
+    "Tu lis un livre",
+    "Il joue avec le ballon",
+    "Elle court dans la rue",
+    "Nous dormons au parc",
+    "Vous regardez un film",
+    "Ils prennent un café",
+    "Elles trouvent une solution",
+    "Je cherche mon stylo",
+    "Tu ouvres la fenêtre",
+    "Il ferme la porte",
+    "Elle lit une lettre",
+    "Nous écrivons un message",
+    "Vous entendez un bruit",
+    "Ils voient une voiture",
+    "Elles chantent une chanson"
+]
 
-# English
-sujets_en = ["I", "You", "He", "She", "We", "They"]
-verbes_en = ["eat", "read", "play", "run", "sleep", "watch", "take", "find", "look for", "open"]
-complements_en = ["an apple", "a book", "the ball", "in the street", "at the park", "at school", "in the garden"]
+# Phrases complètes en anglais
+phrases_en = [
+    "I eat an apple",
+    "You read a book",
+    "He plays with the ball",
+    "She runs in the street",
+    "We sleep at the park",
+    "They watch a movie",
+    "I take the train",
+    "You find your keys",
+    "He opens the door",
+    "She closes the window",
+    "We write a message",
+    "They hear a sound",
+    "I see a bird",
+    "You drive a car",
+    "He drinks coffee",
+    "She sings a song"
+]
 
 def generate_phrase(lang="fr"):
     if lang == "en":
-        sujet = random.choice(sujets_en)
-        verbe = random.choice(verbes_en)
-        complement = random.choice(complements_en)
-        return f"{sujet} {verbe} {complement}"
+        return random.choice(phrases_en)
     else:
-        sujet = random.choice(sujets_fr)
-        verbe = random.choice(verbes_fr)
-        complement = random.choice(complements_fr)
-        return f"{sujet} {verbe} {complement}"
+        return random.choice(phrases_fr)
 
 def add_security_elements(phrase, add_numbers=False, add_symbols=False, position="end"):
     numbers = "1234567890"
