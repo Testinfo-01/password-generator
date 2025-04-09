@@ -39,19 +39,85 @@
       box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
       display: inline-block;
     }
+    .history {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #555;
+    }
+    .history-item {
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
+  <img src="https://img.icons8.com/fluency/96/lock.png" alt="Cadenas" width="80" height="80">
   <h1>Générateur de phrases simples et sécurisées</h1>
+
   <form method="post">
+    <label>Langue :
+      <select name="langue">
+        <option value="fr">Français</option>
+        <option value="en">English</option>
+      </select>
+    </label>
+    <br><br>
+
+    <label><input type="checkbox" name="add_numbers"> Ajouter des chiffres</label><br>
+    <label><input type="checkbox" name="add_symbols"> Ajouter des caractères spéciaux</label><br>
+    <label>Position :
+      <select name="position">
+        <option value="end">Fin</option>
+        <option value="start">Début</option>
+      </select>
+    </label>
+    <br><br>
+
     <button type="submit">Générer une phrase</button>
   </form>
 
   {% if password %}
-    <div class="result">
+    <div class="result" id="generatedPhrase">
       Voici votre phrase générée :<br><br>
       "{{ password }}"
     </div>
+    <button onclick="copyToClipboard()">Copier</button>
+
+    <div class="history">
+      <h3>Historique des phrases :</h3>
+      <div id="historyList"></div>
+    </div>
   {% endif %}
+
+  <script>
+    function copyToClipboard() {
+      const text = document.querySelector(".result").innerText;
+      navigator.clipboard.writeText(text);
+      alert("Phrase copiée !");
+    }
+
+    const phrase = "{{ password }}";
+    if (phrase) {
+      const historyKey = "phrase_history";
+      let history = JSON.parse(localStorage.getItem(historyKey)) || [];
+
+      // Éviter doublons consécutifs
+      if (phrase !== history[0]) {
+        history.unshift(phrase);
+      }
+
+      // Garder les 5 dernières
+      history = history.slice(0, 5);
+      localStorage.setItem(historyKey, JSON.stringify(history));
+
+      // Affichage
+      const historyList = document.getElementById("historyList");
+      history.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "history-item";
+        item.textContent = `"${p}"`;
+        historyList.appendChild(item);
+      });
+    }
+  </script>
 </body>
 </html>
