@@ -1,42 +1,60 @@
-
 from flask import Flask, render_template, request
 import random
 import os
 
 app = Flask(__name__)
 
-def generate_natural_passphrase():
-    sujets = [
-        "Je", "Tu", "Il", "Elle", "Nous", "Vous", "Ils", "Elles",
-        "Mon frère", "Ma sœur", "Le chat", "Le chien", "Le professeur", "Un ami",
-        "Le voisin", "Ma mère", "Le médecin", "Le policier", "Le facteur"
-    ]
+# Français
+sujets_fr = ["Je", "Tu", "Il", "Elle", "Nous", "Vous", "Ils", "Elles"]
+verbes_fr = ["mange", "lit", "joue", "court", "dort", "regarde", "prend", "trouve", "cherche", "ouvre"]
+complements_fr = ["une pomme", "un livre", "le ballon", "dans la rue", "au parc", "à l’école", "dans le jardin"]
 
-    verbes = [
-        "mange", "lit", "joue", "court", "dort", "regarde", "prend", "trouve", "cherche", "porte",
-        "ouvre", "ferme", "écrit", "aime", "entend", "voit", "explique", "apprend", "utilise", "prépare",
-        "répare", "construit", "détruit", "observe", "dessine", "signe", "nettoie", "analyse", "commente", "traduit"
-    ]
+# English
+sujets_en = ["I", "You", "He", "She", "We", "They"]
+verbes_en = ["eat", "read", "play", "run", "sleep", "watch", "take", "find", "look for", "open"]
+complements_en = ["an apple", "a book", "the ball", "in the street", "at the park", "at school", "in the garden"]
 
-    complements = [
-        "une pomme", "un livre", "la porte", "le ballon", "une chaise", "un vélo", "le pain",
-        "dans la rue", "au parc", "à l’école", "dans la maison", "sur le bureau", "avec son ami",
-        "dans le jardin", "sous la table", "près de l’arbre", "à la bibliothèque", "à la cuisine",
-        "dans le salon", "au garage", "dans la forêt", "sur le toit", "sur le canapé", "dans le grenier",
-        "dans la voiture", "au cinéma", "au marché", "sur la plage", "dans le train", "dans l’avion"
-    ]
+def generate_phrase(lang="fr"):
+    if lang == "en":
+        sujet = random.choice(sujets_en)
+        verbe = random.choice(verbes_en)
+        complement = random.choice(complements_en)
+        return f"{sujet} {verbe} {complement}"
+    else:
+        sujet = random.choice(sujets_fr)
+        verbe = random.choice(verbes_fr)
+        complement = random.choice(complements_fr)
+        return f"{sujet} {verbe} {complement}"
 
-    sujet = random.choice(sujets)
-    verbe = random.choice(verbes)
-    complement = random.choice(complements)
+def add_security_elements(phrase, add_numbers=False, add_symbols=False, position="end"):
+    numbers = "1234567890"
+    symbols = "!@#$%^&*"
+    prefix = ""
+    suffix = ""
 
-    return f"{sujet} {verbe} {complement}"
+    if add_numbers:
+        n = random.choice(numbers)
+        prefix += n if position == "start" else ""
+        suffix += n if position == "end" else ""
+    if add_symbols:
+        s = random.choice(symbols)
+        prefix += s if position == "start" else ""
+        suffix += s if position == "end" else ""
+
+    return f"{prefix}{phrase}{suffix}"
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     password = ""
     if request.method == "POST":
-        password = generate_natural_passphrase()
+        lang = request.form.get("langue", "fr")
+        add_numbers = "add_numbers" in request.form
+        add_symbols = "add_symbols" in request.form
+        position = request.form.get("position", "end")
+
+        phrase = generate_phrase(lang)
+        password = add_security_elements(phrase, add_numbers, add_symbols, position)
+
     return render_template("index.html", password=password)
 
 if __name__ == "__main__":
